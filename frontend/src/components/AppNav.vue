@@ -1,22 +1,22 @@
 <template>
   <header class="app-nav">
-    <div class="brand"><span class="brand-mark">M</span><span>Monitor Console</span></div>
+    <div class="brand"><span class="brand-mark">M</span><span>监控演练台</span></div>
     <nav class="nav-links">
       <RouterLink v-for="item in items" :key="item.to" :to="item.to" class="nav-link">
         {{ item.label }}
       </RouterLink>
     </nav>
-    <span class="env-badge">DEMO ENV</span>
+    <span class="env-badge">演示环境</span>
   </header>
 </template>
 
 <script setup lang="ts">
 const items = [
-  { label: 'Storefront', to: '/' },
-  { label: 'Dashboard', to: '/dashboard' },
-  { label: 'Event stream', to: '/events' },
-  { label: 'Visual config', to: '/visual-tracking' },
-  { label: 'Learning', to: '/study/foundation' },
+  { label: '前台商城', to: '/' },
+  { label: '监控看板', to: '/dashboard' },
+  { label: '事件中心', to: '/events' },
+  { label: '可视化埋点', to: '/visual-tracking' },
+  { label: '学习路径', to: '/study/foundation' },
 ]
 </script>
 

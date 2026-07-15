@@ -2,7 +2,7 @@
   <div class="page-grid">
     <DemoCard
       title="事件中心"
-      description="这里会展示 mock 服务已经接收到的监控事件，也是我们学习字段结构最直观的入口。"
+      description="这里展示 mock 服务已经接收到的监控事件，也是观察字段结构、事件协议和业务字段最直观的入口。"
     >
       <div class="button-row">
         <button :disabled="loading" @click="loadEvents">
@@ -34,7 +34,7 @@ const loadEvents = async () => {
     const response = await fetchEvents()
     items.value = response.items
   } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : '加载事件失败'
+    errorMessage.value = error instanceof Error ? error.message : '加载事件列表失败'
   } finally {
     loading.value = false
   }

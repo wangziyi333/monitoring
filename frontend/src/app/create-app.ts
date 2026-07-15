@@ -4,6 +4,7 @@ import { router } from '../router'
 import { registerClickCollector } from '../sdk/collectors/click'
 import { registerDwellCollector } from '../sdk/collectors/dwell'
 import { registerErrorCollector } from '../sdk/collectors/error'
+import { registerExposureCollector } from '../sdk/collectors/exposure'
 import { registerPerformanceCollector } from '../sdk/collectors/performance'
 import { registerPromiseCollector } from '../sdk/collectors/promise'
 import { registerResourceCollector } from '../sdk/collectors/resource'
@@ -26,6 +27,7 @@ export const createMonitoringApp = () => {
   registerResourceCollector()
   registerRouteCollector(router)
   registerClickCollector()
+  registerExposureCollector()
   registerDwellCollector(router)
   registerPerformanceCollector()
 

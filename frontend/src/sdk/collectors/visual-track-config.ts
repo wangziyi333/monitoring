@@ -9,6 +9,8 @@ import {
   fetchVisualTrackConfigs,
 } from '../../api/visual-track-configs'
 
+//白名单提取是“先定义协议，再按协议取值”；非白名单提取是“页面上有什么，就顺手报什么”
+
 type ConfiguredElementClickDefinition =
   typeof MonitorEventDefinition.Behavior.ConfiguredElementClick
 

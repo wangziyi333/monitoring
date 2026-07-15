@@ -1,6 +1,6 @@
 <template>
   <div v-if="items.length === 0" class="event-table__empty">
-    暂时还没有事件，请先去其他页面触发一些行为。
+    暂时还没有事件，请先去其他页面触发一些操作。
   </div>
   <table v-else class="event-table">
     <thead>

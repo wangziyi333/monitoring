@@ -12,6 +12,7 @@ export const MonitorEventSubType = {
   ManualTrack: 'manual_track',
   Click: 'click',
   ConfiguredClick: 'configured_click',
+  Exposure: 'exposure',
   PageView: 'page_view',
   PageDwell: 'page_dwell',
   JsError: 'js_error',
@@ -30,6 +31,8 @@ export const MonitorEventName = {
   ManualButtonClick: 'manual_button_click',
   DocumentClick: 'document_click',
   ConfiguredElementClick: 'configured_element_click',
+  PageExposure: 'page_exposure',
+  ProductCardExposure: 'product_card_exposure',
   RoutePageView: 'route_page_view',
   PageDwellDuration: 'page_dwell_duration',
   WindowError: 'window_error',
@@ -80,6 +83,27 @@ export interface MonitorEventProtocol {
       productId?: string
       productName?: string
       position?: number
+    }
+  }
+  page_exposure: {
+    type: typeof MonitorEventType.Behavior
+    subType: typeof MonitorEventSubType.Exposure
+    payload: {
+      page: string
+      pageVersion: string
+      moduleId: string
+    }
+  }
+  product_card_exposure: {
+    type: typeof MonitorEventType.Behavior
+    subType: typeof MonitorEventSubType.Exposure
+    payload: {
+      page: string
+      pageVersion: string
+      moduleId: string
+      productId: string
+      productName: string
+      position: number
     }
   }
   route_page_view: {
@@ -193,6 +217,16 @@ export const MonitorEventDefinition = {
       subType: MonitorEventSubType.ConfiguredClick,
       name: MonitorEventName.ConfiguredElementClick,
     },
+    PageExposure: {
+      type: MonitorEventType.Behavior,
+      subType: MonitorEventSubType.Exposure,
+      name: MonitorEventName.PageExposure,
+    },
+    ProductCardExposure: {
+      type: MonitorEventType.Behavior,
+      subType: MonitorEventSubType.Exposure,
+      name: MonitorEventName.ProductCardExposure,
+    },
     RoutePageView: {
       type: MonitorEventType.Behavior,
       subType: MonitorEventSubType.PageView,
@@ -255,6 +289,8 @@ export const MonitorEventDefinition = {
   Behavior: {
     DocumentClick: MonitorEventDefinitionItem<'document_click'>
     ConfiguredElementClick: MonitorEventDefinitionItem<'configured_element_click'>
+    PageExposure: MonitorEventDefinitionItem<'page_exposure'>
+    ProductCardExposure: MonitorEventDefinitionItem<'product_card_exposure'>
     RoutePageView: MonitorEventDefinitionItem<'route_page_view'>
     PageDwellDuration: MonitorEventDefinitionItem<'page_dwell_duration'>
   }

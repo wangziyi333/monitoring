@@ -8,6 +8,7 @@ export interface EventSummaryResponse {
   total: number
   today: number
   errors: number
+  exposures: number
   byName: Array<{ name: string; count: number }>
   recent: MonitorEvent[]
 }

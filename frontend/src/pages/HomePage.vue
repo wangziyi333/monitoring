@@ -2,22 +2,30 @@
   <div class="storefront">
     <section class="storefront-hero">
       <div>
-        <span class="eyebrow">SUMMER MEMBER FESTIVAL</span>
-        <h1>Everyday essentials,<br /><em>better together.</em></h1>
-        <p>Curated picks for a brighter desk, a calmer home, and the small upgrades that make a difference.</p>
-        <button data-track="hero-shop-now" data-track-key="hero-shop-now" @click="trackShop">Shop the collection</button>
+        <span class="eyebrow">夏季会员大促</span>
+        <h1>把日常所需，<br /><em>买得更值得。</em></h1>
+        <p>从居家好物到通勤搭配，这里用一个真实促销场景承载后续要学习的点击、曝光、错误、性能和转化埋点。</p>
+        <button data-track="hero-shop-now" data-track-key="hero-shop-now" @click="trackShop">进入活动会场</button>
       </div>
-      <div class="hero-art"><span>01</span><strong>Fresh<br />arrivals</strong><small>Limited-time member pricing</small></div>
+      <div class="hero-art"><span>01</span><strong>限时<br />上新</strong><small>会员专享折扣进行中</small></div>
     </section>
 
-    <section class="storefront-bar"><strong>Free delivery over $50</strong><span>30-day returns</span><span>Member-only drops every Friday</span></section>
+    <section class="storefront-bar"><strong>满 299 元包邮</strong><span>30 天无忧退换</span><span>每周五上新会员专场</span></section>
 
     <section class="catalog-section">
-      <div class="section-heading"><div><span class="eyebrow">THE EDIT</span><h2>Popular right now</h2></div><span>{{ products.length }} products</span></div>
+      <div class="section-heading"><div><span class="eyebrow">本期主推</span><h2>当前热门商品</h2></div><span>共 {{ products.length }} 件</span></div>
       <div class="product-grid">
-        <article v-for="product in products" :key="product.id" class="product-card">
+        <article
+          v-for="product in products"
+          :key="product.id"
+          class="product-card"
+          :data-exposure-id="`product-card-${product.id}`"
+          :data-product-id="product.id"
+          :data-product-name="product.name"
+          :data-position="product.position"
+        >
           <div class="product-image" :style="{ background: product.color }"><span>{{ product.category }}</span><strong>{{ product.mark }}</strong></div>
-          <div class="product-info"><span class="product-category">{{ product.category }}</span><h3>{{ product.name }}</h3><p>{{ product.description }}</p><div class="product-bottom"><strong>${{ product.price }}</strong><button :data-track="`product-buy-${product.id}`" :data-track-key="`product-buy-${product.id}`" :data-product-id="product.id" :data-product-name="product.name" :data-position="product.position" @click="addToCart(product)">Add to bag</button></div></div>
+          <div class="product-info"><span class="product-category">{{ product.category }}</span><h3>{{ product.name }}</h3><p>{{ product.description }}</p><div class="product-bottom"><strong>¥{{ product.price }}</strong><button :data-track="`product-buy-${product.id}`" :data-track-key="`product-buy-${product.id}`" :data-product-id="product.id" :data-product-name="product.name" :data-position="product.position" @click="addToCart(product)">立即购买</button></div></div>
         </article>
       </div>
     </section>
@@ -32,10 +40,10 @@ import { MonitorEventDefinition } from '../sdk/types/events'
 
 const message = ref('')
 const products = [
-  { id: 'desk-lamp', name: 'Halo desk lamp', category: 'Lighting', description: 'A warm glow for late-night ideas.', price: 64, position: 1, mark: 'HALO', color: '#f5c9a9' },
-  { id: 'tote-bag', name: 'Daily carry tote', category: 'Accessories', description: 'Roomy, durable, ready for the week.', price: 42, position: 2, mark: 'CARRY', color: '#cbded4' },
-  { id: 'ceramic-set', name: 'Morning ceramic set', category: 'Home', description: 'Three quiet pieces for a slower start.', price: 58, position: 3, mark: 'AM', color: '#d9d1c4' },
-  { id: 'linen-shirt', name: 'Relaxed linen shirt', category: 'Apparel', description: 'Lightweight texture, easy all day.', price: 78, position: 4, mark: 'LINEN', color: '#c5d8e7' },
+  { id: 'desk-lamp', name: 'Halo 氛围台灯', category: '家居照明', description: '适合夜间阅读和桌面工作的柔和暖光。', price: 299, position: 1, mark: 'HALO', color: '#f5c9a9' },
+  { id: 'tote-bag', name: 'Daily 通勤托特包', category: '出行配件', description: '容量充足，适合上班、出差和周末短途。', price: 199, position: 2, mark: 'CARRY', color: '#cbded4' },
+  { id: 'ceramic-set', name: 'Morning 陶瓷早餐组', category: '餐厨家居', description: '三件套组合，让早晨的仪式感更完整。', price: 259, position: 3, mark: 'AM', color: '#d9d1c4' },
+  { id: 'linen-shirt', name: 'Relaxed 亚麻衬衫', category: '服饰穿搭', description: '轻薄透气，适合夏季通勤与周末出游。', price: 369, position: 4, mark: 'LINEN', color: '#c5d8e7' },
 ]
 
 const trackShop = () => {
@@ -43,7 +51,7 @@ const trackShop = () => {
 }
 
 const addToCart = (product: (typeof products)[number]) => {
-  message.value = `${product.name} added to your bag`
+  message.value = `${product.name} 已加入购物袋`
   window.setTimeout(() => { message.value = '' }, 2200)
 }
 </script>

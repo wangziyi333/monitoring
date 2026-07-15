@@ -30,6 +30,7 @@ app.get('/api/events/summary', (_req, res) => {
     total: items.length,
     today: items.length,
     errors: items.filter((item) => typeof item === 'object' && item !== null && 'type' in item && (item as { type?: unknown }).type === 'error').length,
+    exposures: items.filter((item) => typeof item === 'object' && item !== null && 'subType' in item && (item as { subType?: unknown }).subType === 'exposure').length,
     byName: [...byName.entries()].map(([name, count]) => ({ name, count })),
     recent: items.slice(0, 8),
   })
