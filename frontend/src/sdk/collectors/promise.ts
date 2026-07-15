@@ -1,9 +1,10 @@
-import { track } from '../core/monitor'
+import { trackEvent } from '../core/monitor'
 import { toSafeObject } from '../utils/safe-json'
+import { MonitorEventDefinition } from '../types/events'
 
 export const registerPromiseCollector = () => {
   window.addEventListener('unhandledrejection', (event) => {
-    track('error', 'promise_error', 'unhandled_rejection', {
+    trackEvent(MonitorEventDefinition.Error.UnhandledRejection, {
       reason: toSafeObject(event.reason),
     })
   })

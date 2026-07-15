@@ -1,4 +1,5 @@
-import { track } from '../core/monitor'
+import { trackEvent } from '../core/monitor'
+import { MonitorEventDefinition } from '../types/events'
 
 export const registerErrorCollector = () => {
   window.addEventListener('error', (event) => {
@@ -12,7 +13,7 @@ export const registerErrorCollector = () => {
       return
     }
 
-    track('error', 'js_error', 'window_error', {
+    trackEvent(MonitorEventDefinition.Error.WindowError, {
       message: event.message,
       filename: event.filename,
       lineno: event.lineno,

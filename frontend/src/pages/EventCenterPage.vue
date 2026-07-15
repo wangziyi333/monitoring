@@ -1,6 +1,9 @@
 <template>
   <div class="page-grid">
-    <DemoCard title="事件中心" description="这里会展示 mock 服务已经接收到的监控事件。">
+    <DemoCard
+      title="事件中心"
+      description="这里会展示 mock 服务已经接收到的监控事件，也是我们学习字段结构最直观的入口。"
+    >
       <div class="button-row">
         <button :disabled="loading" @click="loadEvents">
           {{ loading ? '加载中...' : '刷新事件列表' }}

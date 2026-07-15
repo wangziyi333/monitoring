@@ -8,6 +8,7 @@ import { registerPerformanceCollector } from '../sdk/collectors/performance'
 import { registerPromiseCollector } from '../sdk/collectors/promise'
 import { registerResourceCollector } from '../sdk/collectors/resource'
 import { registerRouteCollector } from '../sdk/collectors/route'
+import { loadVisualClickTrackConfigs } from '../sdk/collectors/visual-track-config'
 import { initMonitor } from '../sdk'
 
 export const createMonitoringApp = () => {
@@ -17,6 +18,8 @@ export const createMonitoringApp = () => {
     batchSize: 3,
     flushInterval: 3000,
   })
+
+  void loadVisualClickTrackConfigs()
 
   registerErrorCollector()
   registerPromiseCollector()

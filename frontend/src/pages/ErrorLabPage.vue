@@ -1,6 +1,9 @@
 <template>
   <div class="page-grid">
-    <DemoCard title="错误实验室" description="这里可以主动触发三类常见错误，观察监控 SDK 是否捕获。">
+    <DemoCard
+      title="错误实验"
+      description="这里可以主动触发三类常见异常，观察监控 SDK 能否捕获。"
+    >
       <div class="button-row">
         <button @click="throwJsError">触发 JS 错误</button>
         <button @click="triggerPromiseError">触发 Promise 异常</button>

@@ -1,4 +1,5 @@
-import { track } from '../core/monitor'
+import { trackEvent } from '../core/monitor'
+import { MonitorEventDefinition } from '../types/events'
 
 export const registerResourceCollector = () => {
   window.addEventListener(
@@ -16,7 +17,7 @@ export const registerResourceCollector = () => {
         return
       }
 
-      track('error', 'resource_error', 'resource_load_failed', {
+      trackEvent(MonitorEventDefinition.Error.ResourceLoadFailed, {
         tagName: target.tagName,
         source: target.getAttribute('src') ?? target.getAttribute('href') ?? '',
       })

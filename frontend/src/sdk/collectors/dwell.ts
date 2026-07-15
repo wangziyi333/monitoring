@@ -1,5 +1,6 @@
 import type { Router } from 'vue-router'
-import { track } from '../core/monitor'
+import { trackEvent } from '../core/monitor'
+import { MonitorEventDefinition } from '../types/events'
 
 export const registerDwellCollector = (router: Router) => {
   let enterAt = Date.now()
@@ -8,7 +9,7 @@ export const registerDwellCollector = (router: Router) => {
   router.afterEach((to) => {
     const leaveAt = Date.now()
 
-    track('behavior', 'page_dwell', 'page_dwell_duration', {
+    trackEvent(MonitorEventDefinition.Behavior.PageDwellDuration, {
       path: currentPath,
       duration: leaveAt - enterAt,
     })

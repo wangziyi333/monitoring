@@ -1,13 +1,15 @@
 :root {
   color-scheme: light;
-  --bg: #f4efe6;
-  --panel: rgba(255, 252, 246, 0.92);
-  --line: #dccfbb;
-  --text: #1d2a33;
-  --muted: #63717d;
-  --accent: #b75a2b;
-  --accent-strong: #8f421f;
-  --shadow: 0 24px 60px rgba(80, 56, 33, 0.14);
+  --bg: #f5f7f9;
+  --panel: #ffffff;
+  --line: #dfe5ea;
+  --text: #17212b;
+  --muted: #687581;
+  --accent: #e4572e;
+  --accent-strong: #b83d1c;
+  --navy: #122333;
+  --mint: #dff4e9;
+  --shadow: 0 14px 34px rgba(26, 45, 61, 0.08);
 }
 
 * {
@@ -24,9 +26,7 @@ body {
   margin: 0;
   color: var(--text);
   font-family: 'Segoe UI', 'PingFang SC', sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(183, 90, 43, 0.16), transparent 30%),
-    linear-gradient(180deg, #fbf7ef 0%, #efe7da 100%);
+  background: var(--bg);
 }
 
 a {
@@ -35,7 +35,7 @@ a {
 
 button {
   border: none;
-  border-radius: 999px;
+  border-radius: 6px;
   padding: 12px 18px;
   background: var(--accent);
   color: #fff;
@@ -52,9 +52,9 @@ button:hover {
 }
 
 .app-main {
-  max-width: 1120px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 28px 32px 56px;
 }
 
 .page-grid {
