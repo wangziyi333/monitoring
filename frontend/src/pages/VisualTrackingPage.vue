@@ -36,14 +36,10 @@
         </section>
       </div>
 
-      <p v-if="message" class="visual-message">{{ message }}</p>
+      <p v-if="toast" :class="['visual-toast', toast.type]">{{ toast.text }}</p>
 
       <div class="config-list">
-        <article
-          v-for="item in configs"
-          :key="item.id"
-          class="config-item"
-        >
+        <article v-for="item in configs" :key="item.id" class="config-item">
           <div>
             <strong>{{ item.trackId }}</strong>
             <p class="config-meta">
@@ -59,13 +55,13 @@
 
     <DemoCard
       title="可视化命中预览"
-      description="点击下面的元素后去事件中心刷新，你会看到 source 分别变成 visual_selector、visual_track_key、declarative。"
+      description="点击下面的元素后回到事件中心刷新，你会看到 source 分别变成 visual_selector、visual_track_key、declarative。"
     >
       <section class="preview-group">
         <h3>Selector 模式预览</h3>
         <div class="product-actions">
-          <button data-track="buy-now">商品操作第一个按钮</button>
-          <button data-track="collect">商品操作第二个按钮</button>
+          <button data-track="buy-now" @click="showToast('已点击 Selector 预览按钮：商品操作第一个按钮。')">商品操作第一个按钮</button>
+          <button data-track="collect" @click="showToast('已点击 Selector 预览按钮：商品操作第二个按钮。')">商品操作第二个按钮</button>
         </div>
         <p class="preview-tip">
           默认种子配置是 <code>.product-actions &gt; button:nth-child(1)</code>，也就是命中这里的第一个按钮。
@@ -75,8 +71,8 @@
       <section class="preview-group">
         <h3>Track Key 模式预览</h3>
         <div class="banner-strip">
-          <button data-track-key="banner-buy-now">Banner 立即购买</button>
-          <button data-track-key="banner-learn-more">Banner 了解更多</button>
+          <button data-track-key="banner-buy-now" @click="showToast('已点击 Track Key 预览按钮：Banner 立即购买。')">Banner 立即购买</button>
+          <button data-track-key="banner-learn-more" @click="showToast('已点击 Track Key 预览按钮：Banner 了解更多。')">Banner 了解更多</button>
         </div>
         <p class="preview-tip">
           默认种子配置是 <code>trackKey=banner-buy-now</code>，它不依赖 DOM 层级，更适合长期稳定使用。
@@ -87,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import DemoCard from '../components/DemoCard.vue'
 import type { VisualClickTrackConfig } from '../sdk/collectors/visual-track-config'
 import {
@@ -97,9 +93,12 @@ import {
 } from '../sdk/collectors/visual-track-config'
 import { MonitorEventDefinition } from '../sdk/types/events'
 
+type ToastKind = 'success' | 'error'
+
 const configs = ref<VisualClickTrackConfig[]>([])
 const saving = ref(false)
-const message = ref('')
+const toast = ref<{ text: string; type: ToastKind } | null>(null)
+let toastTimer: number | undefined
 
 const selectorForm = ref({
   selector: '.product-actions > button:nth-child(1)',
@@ -111,13 +110,23 @@ const trackKeyForm = ref({
   trackId: 'visual-track-key-buy-now',
 })
 
+const showToast = (text: string, type: ToastKind = 'success') => {
+  if (toastTimer !== undefined) {
+    window.clearTimeout(toastTimer)
+  }
+
+  toast.value = { text, type }
+  toastTimer = window.setTimeout(() => {
+    toast.value = null
+  }, 2200)
+}
+
 const refreshConfigs = async () => {
   configs.value = await loadVisualClickTrackConfigs()
 }
 
 const createSelectorConfig = async () => {
   saving.value = true
-  message.value = ''
 
   try {
     await addVisualClickTrackConfig({
@@ -127,10 +136,10 @@ const createSelectorConfig = async () => {
       trackId: selectorForm.value.trackId.trim(),
       definition: MonitorEventDefinition.Behavior.ConfiguredElementClick,
     })
-    message.value = 'Selector 配置已保存并同步到 SDK。'
+    showToast('Selector 配置已保存并同步到 SDK。')
     await refreshConfigs()
   } catch (error) {
-    message.value = error instanceof Error ? error.message : '保存 selector 配置失败'
+    showToast(error instanceof Error ? error.message : '保存 Selector 配置失败', 'error')
   } finally {
     saving.value = false
   }
@@ -138,7 +147,6 @@ const createSelectorConfig = async () => {
 
 const createTrackKeyConfig = async () => {
   saving.value = true
-  message.value = ''
 
   try {
     await addVisualClickTrackConfig({
@@ -148,10 +156,10 @@ const createTrackKeyConfig = async () => {
       trackId: trackKeyForm.value.trackId.trim(),
       definition: MonitorEventDefinition.Behavior.ConfiguredElementClick,
     })
-    message.value = 'Track Key 配置已保存并同步到 SDK。'
+    showToast('Track Key 配置已保存并同步到 SDK。')
     await refreshConfigs()
   } catch (error) {
-    message.value = error instanceof Error ? error.message : '保存 track key 配置失败'
+    showToast(error instanceof Error ? error.message : '保存 Track Key 配置失败', 'error')
   } finally {
     saving.value = false
   }
@@ -159,14 +167,13 @@ const createTrackKeyConfig = async () => {
 
 const removeConfig = async (id: string) => {
   saving.value = true
-  message.value = ''
 
   try {
     await removeVisualClickTrackConfig(id)
-    message.value = '配置已删除并同步到 SDK。'
+    showToast('配置已删除并同步到 SDK。')
     await refreshConfigs()
   } catch (error) {
-    message.value = error instanceof Error ? error.message : '删除配置失败'
+    showToast(error instanceof Error ? error.message : '删除配置失败', 'error')
   } finally {
     saving.value = false
   }
@@ -174,6 +181,12 @@ const removeConfig = async (id: string) => {
 
 onMounted(() => {
   void refreshConfigs()
+})
+
+onBeforeUnmount(() => {
+  if (toastTimer !== undefined) {
+    window.clearTimeout(toastTimer)
+  }
 })
 </script>
 
@@ -205,8 +218,21 @@ onMounted(() => {
   color: var(--text);
 }
 
-.visual-message {
-  color: var(--accent-strong);
+.visual-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  margin: 0;
+  padding: 13px 16px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #fff;
+  box-shadow: var(--shadow);
+  z-index: 20;
+}
+
+.visual-toast.error {
+  background: #9e5030;
 }
 
 .config-list {
