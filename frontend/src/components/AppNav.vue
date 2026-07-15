@@ -16,7 +16,7 @@ const items = [
   { label: '监控看板', to: '/dashboard' },
   { label: '事件中心', to: '/events' },
   { label: '可视化埋点', to: '/visual-tracking' },
-  { label: '学习路径', to: '/study/foundation' },
+  // { label: '学习路径', to: '/study/foundation' },
 ]
 </script>
 
