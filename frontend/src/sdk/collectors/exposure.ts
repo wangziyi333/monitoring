@@ -67,10 +67,16 @@ export const registerExposureCollector = () => {
       .forEach((element) => observer.observe(element))
   }
 
+  const queueObserveProductCards = () => {
+    window.requestAnimationFrame(() => {
+      observeProductCards()
+    })
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', observeProductCards, { once: true })
+    document.addEventListener('DOMContentLoaded', queueObserveProductCards, { once: true })
   } else {
-    observeProductCards()
+    queueObserveProductCards()
   }
 
   window.addEventListener(

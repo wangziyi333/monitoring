@@ -29,6 +29,7 @@ export type MonitorEventSubType =
 
 export const MonitorEventName = {
   ManualButtonClick: 'manual_button_click',
+  AddToCart: 'add_to_cart',
   DocumentClick: 'document_click',
   ConfiguredElementClick: 'configured_element_click',
   PageExposure: 'page_exposure',
@@ -60,6 +61,17 @@ export interface MonitorEventProtocol {
     subType: typeof MonitorEventSubType.ManualTrack
     payload: {
       label: string
+    }
+  }
+  add_to_cart: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      productId: string
+      productName: string
+      position: number
+      quantity: number
+      moduleId: string
     }
   }
   document_click: {
@@ -205,6 +217,11 @@ export const MonitorEventDefinition = {
       subType: MonitorEventSubType.ManualTrack,
       name: MonitorEventName.ManualButtonClick,
     },
+    AddToCart: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.AddToCart,
+    },
   },
   Behavior: {
     DocumentClick: {
@@ -285,6 +302,7 @@ export const MonitorEventDefinition = {
 } as const satisfies {//检查上方对象是否匹配以下意向中的结构，但保留它自己的真实推断结果
   Custom: {
     ManualButtonClick: MonitorEventDefinitionItem<'manual_button_click'>
+    AddToCart: MonitorEventDefinitionItem<'add_to_cart'>
   }
   Behavior: {
     DocumentClick: MonitorEventDefinitionItem<'document_click'>

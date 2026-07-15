@@ -29,6 +29,7 @@
         </article>
       </div>
     </section>
+
     <p v-if="message" class="toast">{{ message }}</p>
   </div>
 </template>
@@ -37,6 +38,8 @@
 import { ref } from 'vue'
 import { trackEvent } from '../sdk'
 import { MonitorEventDefinition } from '../sdk/types/events'
+
+const PRODUCT_MODULE_ID = 'home-popular-products'
 
 const message = ref('')
 const products = [
@@ -51,6 +54,14 @@ const trackShop = () => {
 }
 
 const addToCart = (product: (typeof products)[number]) => {
+  trackEvent(MonitorEventDefinition.Custom.AddToCart, {
+    productId: product.id,
+    productName: product.name,
+    position: product.position,
+    quantity: 1,
+    moduleId: PRODUCT_MODULE_ID,
+  })
+
   message.value = `${product.name} 已加入购物袋`
   window.setTimeout(() => { message.value = '' }, 2200)
 }
