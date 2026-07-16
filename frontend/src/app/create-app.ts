@@ -15,7 +15,8 @@ import { initMonitor } from '../sdk'
 export const createMonitoringApp = () => {
   initMonitor({
     appId: 'monitoring-event-tracking-demo',
-    reportUrl: '/api/report',
+    reportUrl: '/api/report',//正式主上报接口
+    pixelReportUrl: '/api/report/pixel',//像素接口 给image get用
     batchSize: 3,
     flushInterval: 3000,
   })

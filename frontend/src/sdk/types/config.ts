@@ -1,6 +1,7 @@
 export interface MonitorConfig {
   appId: string
   reportUrl: string
+  pixelReportUrl?: string
   batchSize?: number
   flushInterval?: number
 }

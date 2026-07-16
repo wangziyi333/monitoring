@@ -1,1 +1,1 @@
-export { initMonitor, trackEvent } from './core/monitor'
+export { initMonitor, trackEvent, trackEventByImage } from './core/monitor'

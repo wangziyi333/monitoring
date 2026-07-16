@@ -1,5 +1,6 @@
 import { createMonitorContext } from './context'
 import { createEventQueue } from '../transport/queue'
+import { sendEventByImage } from '../transport/sender'
 import type { MonitorConfig } from '../types/config'
 import type { MonitorEvent, TrackEventArgs } from '../types/events'
 import { createId } from '../utils/id'
@@ -7,19 +8,13 @@ import { createId } from '../utils/id'
 let queue: ReturnType<typeof createEventQueue> | null = null
 let currentConfig: MonitorConfig | null = null
 
-export const initMonitor = (config: MonitorConfig) => {
-  currentConfig = config
-  queue = createEventQueue(config)
-}
+const createMonitorEvent = (
+  config: MonitorConfig,
+  ...[definition, payload]: TrackEventArgs
+) => {
+  const context = createMonitorContext(config)
 
-export const trackEvent = (...[definition, payload]: TrackEventArgs) => {
-  if (!currentConfig || !queue) {
-    return
-  }
-
-  const context = createMonitorContext(currentConfig)
-
-  const event = {
+  return {
     id: createId(),
     type: definition.type,
     subType: definition.subType,
@@ -30,7 +25,31 @@ export const trackEvent = (...[definition, payload]: TrackEventArgs) => {
     sessionId: context.sessionId,
     payload,
   } as MonitorEvent
-  // as 表示“我比编译器更确定这个值的类型，请接受我的判断”
+}
 
-  queue.push(event)
+export const initMonitor = (config: MonitorConfig) => {
+  currentConfig = config
+  queue = createEventQueue(config)
+}
+
+export const trackEvent = (...args: TrackEventArgs) => {
+  if (!currentConfig || !queue) {
+    return
+  }
+
+  queue.push(createMonitorEvent(currentConfig, ...args))
+}
+//image埋点使用场景：广告投放、第三方统计对接、历史系统兼容、极轻量的曝光通知、邮箱追踪
+//...args把调用时传进来的多个参数收集成一个数组/元组
+export const trackEventByImage = async (...args: TrackEventArgs) => {
+  if (!currentConfig) {
+    return
+  }
+
+  const event = createMonitorEvent(currentConfig, ...args)
+
+  await sendEventByImage(
+    currentConfig.pixelReportUrl ?? currentConfig.reportUrl,
+    event,
+  )
 }

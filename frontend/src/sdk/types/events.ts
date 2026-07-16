@@ -30,6 +30,15 @@ export type MonitorEventSubType =
 export const MonitorEventName = {
   ManualButtonClick: 'manual_button_click',
   AddToCart: 'add_to_cart',
+  CouponClaimAttempt: 'coupon_claim_attempt',
+  CouponClaimValidateFailed: 'coupon_claim_validate_failed',
+  CouponClaimRequestSent: 'coupon_claim_request_sent',
+  CouponClaimSuccess: 'coupon_claim_success',
+  CouponClaimFailed: 'coupon_claim_failed',
+  PromoGuideDownloadClick: 'promo_guide_download_click',
+  PromoGuideDownloadSuccess: 'promo_guide_download_success',
+  PromoGuideDownloadFailed: 'promo_guide_download_failed',
+  MarketingChannelPixelFire: 'marketing_channel_pixel_fire',
   DocumentClick: 'document_click',
   ConfiguredElementClick: 'configured_element_click',
   PageExposure: 'page_exposure',
@@ -72,6 +81,81 @@ export interface MonitorEventProtocol {
       position: number
       quantity: number
       moduleId: string
+    }
+  }
+  coupon_claim_attempt: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      source: string
+    }
+  }
+  coupon_claim_validate_failed: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      reason: string
+    }
+  }
+  coupon_claim_request_sent: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      phoneTail: string
+    }
+  }
+  coupon_claim_success: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      couponCode: string
+    }
+  }
+  coupon_claim_failed: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      reason: string
+      stage: 'network' | 'business' | 'validation'
+    }
+  }
+  promo_guide_download_click: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      fileName: string
+    }
+  }
+  promo_guide_download_success: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      fileName: string
+    }
+  }
+  promo_guide_download_failed: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      moduleId: string
+      fileName: string
+      reason: string
+    }
+  }
+  marketing_channel_pixel_fire: {
+    type: typeof MonitorEventType.Custom
+    subType: typeof MonitorEventSubType.ManualTrack
+    payload: {
+      campaignId: string
+      placement: string
+      target: string
     }
   }
   document_click: {
@@ -222,6 +306,51 @@ export const MonitorEventDefinition = {
       subType: MonitorEventSubType.ManualTrack,
       name: MonitorEventName.AddToCart,
     },
+    CouponClaimAttempt: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.CouponClaimAttempt,
+    },
+    CouponClaimValidateFailed: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.CouponClaimValidateFailed,
+    },
+    CouponClaimRequestSent: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.CouponClaimRequestSent,
+    },
+    CouponClaimSuccess: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.CouponClaimSuccess,
+    },
+    CouponClaimFailed: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.CouponClaimFailed,
+    },
+    PromoGuideDownloadClick: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.PromoGuideDownloadClick,
+    },
+    MarketingChannelPixelFire: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.MarketingChannelPixelFire,
+    },
+    PromoGuideDownloadSuccess: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.PromoGuideDownloadSuccess,
+    },
+    PromoGuideDownloadFailed: {
+      type: MonitorEventType.Custom,
+      subType: MonitorEventSubType.ManualTrack,
+      name: MonitorEventName.PromoGuideDownloadFailed,
+    },
   },
   Behavior: {
     DocumentClick: {
@@ -303,6 +432,15 @@ export const MonitorEventDefinition = {
   Custom: {
     ManualButtonClick: MonitorEventDefinitionItem<'manual_button_click'>
     AddToCart: MonitorEventDefinitionItem<'add_to_cart'>
+    CouponClaimAttempt: MonitorEventDefinitionItem<'coupon_claim_attempt'>
+    CouponClaimValidateFailed: MonitorEventDefinitionItem<'coupon_claim_validate_failed'>
+    CouponClaimRequestSent: MonitorEventDefinitionItem<'coupon_claim_request_sent'>
+    CouponClaimSuccess: MonitorEventDefinitionItem<'coupon_claim_success'>
+    CouponClaimFailed: MonitorEventDefinitionItem<'coupon_claim_failed'>
+    PromoGuideDownloadClick: MonitorEventDefinitionItem<'promo_guide_download_click'>
+    MarketingChannelPixelFire: MonitorEventDefinitionItem<'marketing_channel_pixel_fire'>
+    PromoGuideDownloadSuccess: MonitorEventDefinitionItem<'promo_guide_download_success'>
+    PromoGuideDownloadFailed: MonitorEventDefinitionItem<'promo_guide_download_failed'>
   }
   Behavior: {
     DocumentClick: MonitorEventDefinitionItem<'document_click'>

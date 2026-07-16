@@ -14,6 +14,42 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
 })
 
+app.post('/api/coupon/claim', (req, res) => {
+  const payload = req.body as { name?: unknown; phone?: unknown } | null
+  const name = typeof payload?.name === 'string' ? payload.name.trim() : ''
+  const phone = typeof payload?.phone === 'string' ? payload.phone.trim() : ''
+
+  if (!name || !/^1\d{10}$/.test(phone)) {
+    res.status(422).json({ message: '请输入姓名和正确的手机号' })
+    return
+  }
+
+  if (phone.endsWith('0000')) {
+    res.status(409).json({ message: '当前手机号暂不满足活动领取条件' })
+    return
+  }
+
+  res.json({
+    ok: true,
+    couponCode: `SUMMER-${phone.slice(-4)}-${Date.now().toString().slice(-4)}`,
+    message: `${name}，优惠券已领取成功`,
+  })
+})
+
+app.get('/api/downloads/promo-guide', (_req, res) => {
+  const content = [
+    '夏季会员大促活动规则',
+    '',
+    '1. 满299元包邮。',
+    '2. 优惠券仅限本活动页面使用。',
+    '3. 每位用户限领取一次。',
+  ].join('\n')
+
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Content-Disposition', 'attachment; filename="summer-promotion-guide.txt"')
+  res.send(content)
+})
+
 app.get('/api/events', (_req, res) => {
   res.json({ items: eventStore.getAll() })
 })
@@ -118,6 +154,28 @@ app.post('/api/report', (req, res) => {
   items.forEach((item) => eventStore.add(item))
 
   res.status(201).json({ ok: true, count: items.length })
+})
+
+app.get('/api/report/pixel', (req, res) => {
+  const raw = typeof req.query.data === 'string' ? req.query.data : ''
+
+  if (raw) {
+    try {
+      const item = JSON.parse(raw) as unknown
+      eventStore.add(item)
+    } catch {
+      // ignore malformed pixel payloads and always return the pixel
+    }
+  }
+
+  const gif = Buffer.from(
+    'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==',
+    'base64',
+  )
+
+  res.setHeader('Content-Type', 'image/gif')
+  res.setHeader('Cache-Control', 'no-store, max-age=0')
+  res.send(gif)
 })
 
 app.listen(port, () => {

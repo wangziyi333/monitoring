@@ -9,6 +9,10 @@ import { resolveVisualClickTrack } from './visual-track-config'
 //敏感信息->真实系统里会做字段白名单、文本截断、敏感词过滤，避免把隐私信息带过去
 //配置版本->页面 DOM 改了但平台配置没更新，老配置会污染新版本数据。真实系统会加页面版本、配置版本或发布时间来做隔离。
 export const registerClickCollector = () => {
+  //无埋点/全埋点
+  //底层监控：错误、性能、资源、白屏
+  //中层全埋点：通用点击、浏览、停留、输入
+  //上层业务埋点：注册、加购、下单、支付、权限失败
   document.addEventListener('click', (event) => {
     const target = event.target
 
