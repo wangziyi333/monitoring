@@ -18,6 +18,7 @@ export const MonitorEventSubType = {
   JsError: 'js_error',
   PromiseError: 'promise_error',
   ResourceError: 'resource_error',
+  BlankScreen: 'blank_screen',
   NavigationTiming: 'navigation_timing',
   Paint: 'paint',
   LayoutShift: 'layout_shift',
@@ -49,6 +50,7 @@ export const MonitorEventName = {
   WindowError: 'window_error',
   UnhandledRejection: 'unhandled_rejection',
   ResourceLoadFailed: 'resource_load_failed',
+  BlankScreenSuspected: 'blank_screen_suspected',
   PageNavigationTiming: 'page_navigation_timing',
   FirstContentfulPaint: 'first_contentful_paint',
   LargestContentfulPaint: 'largest_contentful_paint',
@@ -83,6 +85,13 @@ export type WebVitalNavigationType =
   | 'back-forward-cache'
   | 'prerender'
   | 'restore'
+
+export type BlankScreenCheckPhase = 'initial_load' | 'route_change'
+
+export type BlankScreenReason =
+  | 'main_container_missing'
+  | 'no_effective_content'
+  | 'only_shell_visible'
 
 export interface MonitorEventProtocol {
   manual_button_click: {
@@ -261,6 +270,26 @@ export interface MonitorEventProtocol {
     payload: {
       tagName: string
       source: string
+    }
+  }
+  blank_screen_suspected: {
+    type: typeof MonitorEventType.Error
+    subType: typeof MonitorEventSubType.BlankScreen
+    payload: {
+      //哪个路由疑似白屏
+      route: string
+      //检测的是哪个关键容器
+      target: string
+      //首屏还是切路由后
+      checkPhase: BlankScreenCheckPhase
+      //采样了几个点
+      samplePoints: number
+      //其中几个点没有有效内容
+      emptyPointCount: number
+      //从开始观察到最终判定耗时多久
+      duration: number
+      //为什么判定它疑似白屏
+      reason: BlankScreenReason
     }
   }
   page_navigation_timing: {
@@ -444,6 +473,11 @@ export const MonitorEventDefinition = {
       subType: MonitorEventSubType.ResourceError,
       name: MonitorEventName.ResourceLoadFailed,
     },
+    BlankScreenSuspected: {
+      type: MonitorEventType.Error,
+      subType: MonitorEventSubType.BlankScreen,
+      name: MonitorEventName.BlankScreenSuspected,
+    },
   },
   Performance: {
     PageNavigationTiming: {
@@ -508,6 +542,7 @@ export const MonitorEventDefinition = {
     WindowError: MonitorEventDefinitionItem<'window_error'>
     UnhandledRejection: MonitorEventDefinitionItem<'unhandled_rejection'>
     ResourceLoadFailed: MonitorEventDefinitionItem<'resource_load_failed'>
+    BlankScreenSuspected: MonitorEventDefinitionItem<'blank_screen_suspected'>
   }
   Performance: {
     PageNavigationTiming: MonitorEventDefinitionItem<'page_navigation_timing'>

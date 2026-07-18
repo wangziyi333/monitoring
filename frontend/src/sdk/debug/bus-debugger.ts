@@ -26,6 +26,9 @@ export const registerBusDebugger = () => {
         target: formatTarget(target),
       })
     }),
+    onMonitorBusEvent('dom:blank-screen:detected', (payload) => {
+      console.info('[bus] dom:blank-screen:detected', payload)
+    }),
     onMonitorBusEvent('dom:exposure:enter', ({ exposureId, element, position }) => {
       console.info('[bus] dom:exposure:enter', {
         exposureId,
@@ -47,6 +50,13 @@ export const registerBusDebugger = () => {
     }),
     onMonitorBusEvent('track:exposure:resolved', ({ definition, payload }) => {
       console.info('[bus] track:exposure:resolved', {
+        name: definition.name,
+        subType: definition.subType,
+        payload,
+      })
+    }),
+    onMonitorBusEvent('track:blank-screen:resolved', ({ definition, payload }) => {
+      console.info('[bus] track:blank-screen:resolved', {
         name: definition.name,
         subType: definition.subType,
         payload,

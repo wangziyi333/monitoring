@@ -3,6 +3,8 @@ import App from '../App.vue'
 import { router } from '../router'
 import { registerClickCollector } from '../sdk/collectors/click'
 import { registerClickResolver } from '../sdk/collectors/click-resolver'
+import { registerBlankScreenCollector } from '../sdk/collectors/blank-screen'
+import { registerBlankScreenResolver } from '../sdk/collectors/blank-screen-resolver'
 import { registerExposureResolver } from '../sdk/collectors/exposure-resolver'
 import { registerBusDebugger } from '../sdk/debug/bus-debugger'
 import { registerDwellCollector } from '../sdk/collectors/dwell'
@@ -33,8 +35,10 @@ export const createMonitoringApp = () => {
   registerRouteCollector(router)
   registerClickCollector()
   registerClickResolver()
+  registerBlankScreenResolver()
   registerExposureResolver()
   registerBusDebugger()
+  registerBlankScreenCollector(router)
   registerExposureCollector(router)
   registerDwellCollector(router)
   registerPerformanceCollector()

@@ -9,6 +9,16 @@ trackEvent(MonitorEventDefinition.Custom.ManualButtonClick, {
   label: 'tracking-lab-manual-button',
 })
 
+trackEvent(MonitorEventDefinition.Error.BlankScreenSuspected, {
+  route: '/',
+  target: '.storefront',
+  checkPhase: 'initial_load',
+  samplePoints: 5,
+  emptyPointCount: 5,
+  duration: 1800,
+  reason: 'no_effective_content',
+})
+
 trackEvent(MonitorEventDefinition.Behavior.ConfiguredElementClick, {
   trackId: 'buy-now',
   tagName: 'BUTTON',
@@ -57,4 +67,15 @@ trackEvent(MonitorEventDefinition.Behavior.ConfiguredElementClick, {
   trackId: 'buy-now',
   tagName: 'BUTTON',
   text: '模拟立即购买',
+})
+
+// @ts-expect-error blank_screen_suspected reason must be a supported literal
+trackEvent(MonitorEventDefinition.Error.BlankScreenSuspected, {
+  route: '/',
+  target: '.storefront',
+  checkPhase: 'initial_load',
+  samplePoints: 5,
+  emptyPointCount: 5,
+  duration: 1800,
+  reason: 'blank',
 })

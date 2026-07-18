@@ -23,6 +23,18 @@ export interface MonitorBusEventMap {
   'dom:click': {
     target: Element
   }
+  'dom:blank-screen:detected': {
+    route: string
+    target: string
+    checkPhase: 'initial_load' | 'route_change'
+    samplePoints: number
+    emptyPointCount: number
+    duration: number
+    reason:
+      | 'main_container_missing'
+      | 'no_effective_content'
+      | 'only_shell_visible'
+  }
   'dom:exposure:enter': {
     exposureId: string
     element: HTMLElement
@@ -37,6 +49,7 @@ export interface MonitorBusEventMap {
     exposureId: string
   }
   'track:click:resolved': MonitorTrackRequest
+  'track:blank-screen:resolved': MonitorTrackRequest
   'track:exposure:resolved': MonitorTrackRequest
   'monitor:event': MonitorTrackRequest
   'monitor:event:queued': {
