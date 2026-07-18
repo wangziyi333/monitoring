@@ -2,11 +2,19 @@ import type { MonitorConfig } from '../types/config'
 import type { MonitorEvent } from '../types/events'
 import { sendEvents } from './sender'
 
+// 真实系统通常还会继续补这些能力：
+// 1. 最大缓存条数，避免本地缓存无限增长。
+// 2. 重试次数上限，避免坏数据永久卡在队列里。
+// 3. 指数退避，避免服务端故障时频繁重试。
+// 4. 事件过期清理，避免很久以前的旧事件污染新数据。
+// 5. 服务端幂等去重，避免同一事件被重复入库。
 const PENDING_CACHE_KEY = 'monitoring-demo-pending-events'
 
 export const createEventQueue = (config: MonitorConfig) => {
   const items: MonitorEvent[] = []
+  // 量到了就立刻发，减少零碎请求。
   const batchSize = config.batchSize ?? 5
+  // 量不够也不能一直等，给低频事件一个兜底发送时机。
   const flushInterval = config.flushInterval ?? 5000
   let isFlushing = false
   let flushAgain = false
@@ -57,7 +65,6 @@ export const createEventQueue = (config: MonitorConfig) => {
     }
 
     isFlushing = true
-
     const batch = items.splice(0, batchSize)
 
     try {

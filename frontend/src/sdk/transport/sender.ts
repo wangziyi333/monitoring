@@ -58,6 +58,7 @@ export const sendEventByImage = (
     const separator = reportUrl.includes('?') ? '&' : '?'
     //onload 本身是一个属性，赋值函数回调会在图片加载成功后执行
     //注意：不代表服务端业务一定处理成功，只是图片请求成功了
+   //先绑定后发车，一旦绑定赋值src请求就发送了
     image.onload = () => resolve()
     image.onerror = () => reject(new Error('image report failed'))
     //赋值后浏览器会自动发起图片请求    

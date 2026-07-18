@@ -22,6 +22,7 @@ export const MonitorEventSubType = {
   Paint: 'paint',
   LayoutShift: 'layout_shift',
   LongTask: 'longtask',
+  WebVital: 'web_vital',
 } as const
 
 export type MonitorEventSubType =
@@ -53,6 +54,8 @@ export const MonitorEventName = {
   LargestContentfulPaint: 'largest_contentful_paint',
   CumulativeLayoutShift: 'cumulative_layout_shift',
   MainThreadLongTask: 'main_thread_long_task',
+  WebVitalsInp: 'web_vitals_inp',
+  WebVitalsTtfb: 'web_vitals_ttfb',
 } as const
 
 export const ConfiguredClickSource = {
@@ -63,6 +66,23 @@ export const ConfiguredClickSource = {
 
 export type ConfiguredClickSource =
   (typeof ConfiguredClickSource)[keyof typeof ConfiguredClickSource]
+
+export const WebVitalRating = {
+  Good: 'good',
+  NeedsImprovement: 'needs-improvement',
+  Poor: 'poor',
+} as const
+
+export type WebVitalRating =
+  (typeof WebVitalRating)[keyof typeof WebVitalRating]
+
+export type WebVitalNavigationType =
+  | 'navigate'
+  | 'reload'
+  | 'back-forward'
+  | 'back-forward-cache'
+  | 'prerender'
+  | 'restore'
 
 export interface MonitorEventProtocol {
   manual_button_click: {
@@ -284,6 +304,30 @@ export interface MonitorEventProtocol {
       startTime: number
     }
   }
+  web_vitals_inp: {
+    type: typeof MonitorEventType.Performance
+    subType: typeof MonitorEventSubType.WebVital
+    payload: {
+      value: number
+      delta: number
+      rating: WebVitalRating
+      metricId: string
+      navigationType: WebVitalNavigationType
+      entryCount: number
+    }
+  }
+  web_vitals_ttfb: {
+    type: typeof MonitorEventType.Performance
+    subType: typeof MonitorEventSubType.WebVital
+    payload: {
+      value: number
+      delta: number
+      rating: WebVitalRating
+      metricId: string
+      navigationType: WebVitalNavigationType
+      entryCount: number
+    }
+  }
 }
 
 export type MonitorEventName = keyof MonitorEventProtocol
@@ -427,8 +471,18 @@ export const MonitorEventDefinition = {
       subType: MonitorEventSubType.LongTask,
       name: MonitorEventName.MainThreadLongTask,
     },
+    WebVitalsInp: {
+      type: MonitorEventType.Performance,
+      subType: MonitorEventSubType.WebVital,
+      name: MonitorEventName.WebVitalsInp,
+    },
+    WebVitalsTtfb: {
+      type: MonitorEventType.Performance,
+      subType: MonitorEventSubType.WebVital,
+      name: MonitorEventName.WebVitalsTtfb,
+    },
   },
-} as const satisfies {//检查上方对象是否匹配以下意向中的结构，但保留它自己的真实推断结果
+} as const satisfies {
   Custom: {
     ManualButtonClick: MonitorEventDefinitionItem<'manual_button_click'>
     AddToCart: MonitorEventDefinitionItem<'add_to_cart'>
@@ -461,6 +515,8 @@ export const MonitorEventDefinition = {
     LargestContentfulPaint: MonitorEventDefinitionItem<'largest_contentful_paint'>
     CumulativeLayoutShift: MonitorEventDefinitionItem<'cumulative_layout_shift'>
     MainThreadLongTask: MonitorEventDefinitionItem<'main_thread_long_task'>
+    WebVitalsInp: MonitorEventDefinitionItem<'web_vitals_inp'>
+    WebVitalsTtfb: MonitorEventDefinitionItem<'web_vitals_ttfb'>
   }
 }
 

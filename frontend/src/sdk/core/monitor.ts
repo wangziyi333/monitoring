@@ -1,18 +1,22 @@
 import { createMonitorContext } from './context'
+import { emitMonitorBusEvent, onMonitorBusEvent } from './event-bus'
 import { createEventQueue } from '../transport/queue'
 import { sendEventByImage } from '../transport/sender'
 import type { MonitorConfig } from '../types/config'
 import type { MonitorEvent, TrackEventArgs } from '../types/events'
+import type { MonitorTrackRequest } from '../types/internal-events'
 import { createId } from '../utils/id'
 
 let queue: ReturnType<typeof createEventQueue> | null = null
 let currentConfig: MonitorConfig | null = null
+let teardownMonitorEventListener: (() => void) | null = null
 
 const createMonitorEvent = (
   config: MonitorConfig,
-  ...[definition, payload]: TrackEventArgs
+  request: MonitorTrackRequest,
 ) => {
   const context = createMonitorContext(config)
+  const { definition, payload } = request
 
   return {
     id: createId(),
@@ -30,23 +34,43 @@ const createMonitorEvent = (
 export const initMonitor = (config: MonitorConfig) => {
   currentConfig = config
   queue = createEventQueue(config)
+
+  teardownMonitorEventListener?.()
+  teardownMonitorEventListener = onMonitorBusEvent('monitor:event', (request) => {
+    if (!currentConfig || !queue) {
+      return
+    }
+
+    const event = createMonitorEvent(currentConfig, request)
+
+    queue.push(event)
+    emitMonitorBusEvent('monitor:event:queued', { event })
+  })
 }
 
 export const trackEvent = (...args: TrackEventArgs) => {
-  if (!currentConfig || !queue) {
+  if (!currentConfig) {
     return
   }
 
-  queue.push(createMonitorEvent(currentConfig, ...args))
+  const request = {
+    definition: args[0],
+    payload: args[1],
+  } as MonitorTrackRequest
+
+  emitMonitorBusEvent('monitor:event', request)
 }
-//image埋点使用场景：广告投放、第三方统计对接、历史系统兼容、极轻量的曝光通知、邮箱追踪
-//...args把调用时传进来的多个参数收集成一个数组/元组
+
 export const trackEventByImage = async (...args: TrackEventArgs) => {
   if (!currentConfig) {
     return
   }
 
-  const event = createMonitorEvent(currentConfig, ...args)
+  const request = {
+    definition: args[0],
+    payload: args[1],
+  } as MonitorTrackRequest
+  const event = createMonitorEvent(currentConfig, request)
 
   await sendEventByImage(
     currentConfig.pixelReportUrl ?? currentConfig.reportUrl,
