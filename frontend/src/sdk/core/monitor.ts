@@ -1,4 +1,4 @@
-import { createMonitorContext } from './context'
+import { createMonitorContext, resetMonitorContext } from './context'
 import { emitMonitorBusEvent, onMonitorBusEvent } from './event-bus'
 import { createEventQueue } from '../transport/queue'
 import { sendEventByImage } from '../transport/sender'
@@ -27,11 +27,13 @@ const createMonitorEvent = (
     url: context.url,
     appId: context.appId,
     sessionId: context.sessionId,
+    replayId: context.replayId,
     payload,
   } as MonitorEvent
 }
 
 export const initMonitor = (config: MonitorConfig) => {
+  resetMonitorContext()
   currentConfig = config
   queue = createEventQueue(config)
 

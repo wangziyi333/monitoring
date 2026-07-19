@@ -7,12 +7,14 @@ import VisualTrackingPage from '../pages/VisualTrackingPage.vue'
 import PerformanceLabPage from '../pages/PerformanceLabPage.vue'
 import EventCenterPage from '../pages/EventCenterPage.vue'
 import DashboardPage from '../pages/DashboardPage.vue'
+import ReplayDetailPage from '../pages/ReplayDetailPage.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', name: 'home', component: HomePage },
     { path: '/dashboard', name: 'dashboard', component: DashboardPage },
+    { path: '/replays/:replayId', name: 'replay-detail', component: ReplayDetailPage },
     { path: '/study/:stageId', name: 'study-stage', component: StudyStagePage },
     { path: '/errors', name: 'errors', component: ErrorLabPage },
     { path: '/tracking', name: 'tracking', component: TrackingLabPage },

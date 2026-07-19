@@ -568,6 +568,7 @@ interface MonitorEventCommon {
   url: string
   appId: string
   sessionId: string
+  replayId?: string
 }
 
 export type MonitorEvent = {

@@ -1,6 +1,7 @@
 import cors from 'cors'
 import express from 'express'
 import { eventStore } from './store/event-store'
+import { replayStore } from './store/replay-store'
 import { visualTrackStore } from './store/visual-track-store'
 import type { VisualTrackConfig } from './types'
 
@@ -70,6 +71,39 @@ app.get('/api/events/summary', (_req, res) => {
     byName: [...byName.entries()].map(([name, count]) => ({ name, count })),
     recent: items.slice(0, 8),
   })
+})
+
+app.get('/api/replays', (_req, res) => {
+  res.json({ items: replayStore.getAll() })
+})
+
+app.get('/api/replays/summary', (_req, res) => {
+  const items = replayStore.getAll()
+  const latest =
+    items.find((item) => typeof item === 'object' && item !== null) ?? null
+
+  res.json({
+    total: items.length,
+    retained: items.filter(
+      (item) =>
+        typeof item === 'object' &&
+        item !== null &&
+        'retainedReason' in item &&
+        typeof (item as { retainedReason?: unknown }).retainedReason === 'string',
+    ).length,
+    latest,
+  })
+})
+
+app.get('/api/replays/:replayId', (req, res) => {
+  const item = replayStore.getById(req.params.replayId)
+
+  if (!item) {
+    res.status(404).json({ message: 'replay not found' })
+    return
+  }
+
+  res.json({ item })
 })
 
 app.get('/api/visual-track-configs', (_req, res) => {
@@ -154,6 +188,18 @@ app.post('/api/report', (req, res) => {
   items.forEach((item) => eventStore.add(item))
 
   res.status(201).json({ ok: true, count: items.length })
+})
+
+app.post('/api/replays', (req, res) => {
+  const payload = req.body as Record<string, unknown> | null
+
+  if (!payload || typeof payload !== 'object') {
+    res.status(400).json({ message: 'invalid replay payload' })
+    return
+  }
+
+  replayStore.add(payload)
+  res.status(201).json({ ok: true })
 })
 
 app.get('/api/report/pixel', (req, res) => {

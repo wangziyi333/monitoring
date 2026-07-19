@@ -4,6 +4,8 @@ export interface MonitorConfig {
   pixelReportUrl?: string
   batchSize?: number
   flushInterval?: number
+  replayEnabled?: boolean
+  replaySampleRate?: number
 }
 //使用interface是如果未来增加可以直接
 // interface MonitorConfig {
