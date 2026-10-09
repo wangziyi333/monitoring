@@ -45,6 +45,7 @@
     </section>
 
     <p v-if="message" class="toast">{{ message }}</p>
+
   </div>
 </template>
 
